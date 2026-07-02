@@ -1,0 +1,32 @@
+#!/usr/bin/env bpftrace
+
+kprobe:netif_receive_generic_xdp
+{
+    $pskb = (struct sk_buff **)arg0;
+    $skb = *$pskb;
+
+    if ($skb == 0) {
+        exit();
+    }
+
+    printf("\n========== Generic XDP ==========\n");
+
+    printf("skb            : %p\n", $skb);
+
+    printf("skb->len       : %u\n", $skb->len);
+    printf("skb->protocol  : 0x%x\n", $skb->protocol);
+
+    printf("skb->head      : %p\n", $skb->head);
+    printf("skb->data      : %p\n", $skb->data);
+
+    printf("skb->tail      : %u\n", $skb->tail);
+    printf("skb->end       : %u\n", $skb->end);
+
+    printf("skb->dev       : %p\n", $skb->dev);
+
+    if ($skb->dev) {
+        printf("skb->dev->name : %s\n", str($skb->dev->name));
+    }
+
+    printf("=================================\n");
+}
