@@ -611,11 +611,6 @@ bpf_printk(...)
 
 ---
 
-## List XDP Programs
-
-```bash
-sudo bpftool prog show
-```
 
 ---
 
@@ -633,41 +628,6 @@ ip link show
 ip -details link show
 ```
 
----
-
-## Capture Traffic
-
-```bash
-sudo tcpdump -i wlp1s0
-```
-
----
-
-## Ping
-
-```bash
-ping <IP>
-```
-
-Generates ICMP packets.
-
----
-
-## Netcat Listener
-
-```bash
-nc -l 8080
-```
-
----
-
-## Netcat Client
-
-```bash
-echo "Hello XDP" | nc <IP> 8080
-```
-
-Generates TCP packets with payload.
 
 ---
 
