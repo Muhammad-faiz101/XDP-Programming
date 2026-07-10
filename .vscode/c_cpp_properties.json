@@ -8,10 +8,12 @@
                 "/usr/include/x86_64-linux-gnu",
                 "/usr/src/linux-headers-**"
             ],
-            "defines": [],
+            "defines": [
+                "__bpf__",
+                "__TARGET_ARCH_x86"
+            ],
             "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
+            "cStandard": "c11",
             "intelliSenseMode": "linux-clang-x64"
         }
     ],
