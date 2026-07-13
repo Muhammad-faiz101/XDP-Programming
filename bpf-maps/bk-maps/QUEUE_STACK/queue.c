@@ -48,3 +48,23 @@ if (ret == 0) {
 }
 // to pop out elements on terminal:
 //  sudo bpftool map pop id ...
+
+//This could be attached somewhere else to process the queue
+// SEC("kprobe/sys_clone") 
+// int dequeue_packet(void *ctx)
+// {
+//     __u32 popped_ip = 0;
+
+//     // Pop the oldest item out of the queue using the dedicated helper
+//     long ret = bpf_map_pop_elem(&queuemap, &popped_ip);
+
+//     if (ret == 0) {
+//         // Successfully popped, now we print it!
+//         bpf_printk("Popped IP: %pI4\n", &popped_ip);
+//     } else if (ret == -7) { // -7 is -E2BIG or -ENOENT depending on context, means empty here
+//         // Queue was empty, nothing to print
+//     }
+
+//     return 0;
+// }
+

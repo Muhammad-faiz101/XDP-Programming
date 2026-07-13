@@ -42,20 +42,20 @@ int ipv4_stack(struct xdp_md *cont)
     return XDP_PASS;
 }
 
-/* ---------------- CONSUMER (Kprobe) ---------------- */
-SEC("kprobe/sys_clone") 
-int dequeue_packet(void *ctx)
-{
-    __u32 popped_ip = 0;
+// /* ---------------- CONSUMER (Kprobe) ---------------- */
+// SEC("kprobe/sys_clone") 
+// int dequeue_packet(void *ctx)
+// {
+//     __u32 popped_ip = 0;
 
-    // 2. USE THE SAME CHOSEN POP HELPER
-    // Even though it says "pop_elem", the kernel knows this is a Stack map 
-    // and will automatically pull the LAST (newest) item added instead of the oldest.
-    long ret = bpf_map_pop_elem(&stackmap, &popped_ip);
+//     // 2. USE THE SAME CHOSEN POP HELPER
+//     // Even though it says "pop_elem", the kernel knows this is a Stack map 
+//     // and will automatically pull the LAST (newest) item added instead of the oldest.
+//     long ret = bpf_map_pop_elem(&stackmap, &popped_ip);
 
-    if (ret == 0) {
-        bpf_printk("STACK CONSUMER -> Popped Newest IP: %pI4\n", &popped_ip);
-    }
+//     if (ret == 0) {
+//         bpf_printk("STACK CONSUMER -> Popped Newest IP: %pI4\n", &popped_ip);
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
