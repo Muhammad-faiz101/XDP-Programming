@@ -32,12 +32,19 @@ int ipv4_queue(struct xdp_md *cont)
         return XDP_PASS;
 
     __u32 sip=iph -> saddr; //s ip to be pushed into the stack
-    bpf_map_push_elem(&queuemap, &sip, 0); //BPF_ANY= 0    
-    // bpf_printk("Pushing IP: %pI4", &sip); // Prints IP to /sys/kernel/tracing/trace_pipe
+
+// Capture the return value of the push
+long ret = bpf_map_push_elem(&queuemap, &sip, BPF_ANY);     
+// long bpf_map_push_elem(struct bpf_map *map, const void *value, u64 flags)
+
+// ONLY print if it successfully entered the queue (ret == 0)
+if (ret == 0) {
+    bpf_printk("Successfully queued IP: %pI4\n", &sip);
+} else if (ret == -7) { // -E2BIG
+    // bpf_printk("Queue is full, dropping log!\n");
+}
     return XDP_PASS;
-    // long bpf_map_push_elem(struct bpf_map *map, const void *value, u64 flags)
         
 }
 // to pop out elements on terminal:
 //  sudo bpftool map pop id ...
-
