@@ -73,3 +73,6 @@ int xdp_firewall(struct xdp_md *cont)
 }
 
 char _license[] SEC("license") = "GPL";
+
+//# syntax: bpftool map update id <MAP_ID> key <BYTES> value <BYTES>
+// sudo bpftool map update id 42 key 0x32 0x01 0xa8 0xc0 value 0x01 0x00 0x00 0x00
