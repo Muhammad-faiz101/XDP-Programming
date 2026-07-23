@@ -1,64 +1,59 @@
-#define _POSIX_C_SOURCE 199309L // <--- ADD THIS LINE FIRST
-#include <stdio.h>
+#define _POSIX_C_SOURCE 199309L
 #include <stdlib.h>
+#include <stdio.h>
 #include <time.h>
 
+#define SIZE 10000
 
-#define ROWS1 500
-#define COLS1 300
-#define ROWS2 300
-#define COLS2 1300
+// Moved matrix declarations to global scope
+int matrix1[SIZE][SIZE];
+int matrix2[SIZE][SIZE];
+int result[SIZE][SIZE];
 
-int main() {
-    
-    srand(time(NULL));
-
-    // Allocate matrices
-    int mat1[ROWS1][COLS1];
-    int mat2[ROWS2][COLS2];
-    int result[ROWS1][COLS2];
-
-    // Populate mat1 with random numbers between 1 and 10
-    for (int i = 0; i < ROWS1; i++) {
-        for (int j = 0; j < COLS1; j++) {
-            mat1[i][j] = (rand() % 10) + 1;
-        }
-    }
-
-    // Populate mat2 with random numbers between 1 and 10
-    for (int i = 0; i < ROWS2; i++) {
-        for (int j = 0; j < COLS2; j++) {
-            mat2[i][j] = (rand() % 10) + 1;
-        }
-    }
-
-    // High precision time tracking structures
+int main(void)
+{
     struct timespec start, end;
 
-    // Start timing the execution
-    clock_gettime(CLOCK_MONOTONIC, &start);
-
-    // Sequential matrix multiplication
-    for (int i = 0; i < ROWS1; i++) {
-        for (int j = 0; j < COLS2; j++) {
-            int total = 0;
-            for (int k = 0; k < ROWS2; k++) {
-                total += mat1[i][k] * mat2[k][j];
-            }
-            result[i][j] = total;
+    // Initialize matrix1
+    for (int r = 0; r < SIZE; r++)
+    {
+        for (int c = 0; c < SIZE; c++)
+        {
+            matrix1[r][c] = (rand() % 101) + SIZE;
         }
     }
 
-    // End timing
-    clock_gettime(CLOCK_MONOTONIC, &end);
-    
-    // Calculate final time difference in fractions of a second
-    double time_taken = (end.tv_sec - start.tv_sec) + 
-                        (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+    // Initialize matrix2
+    for (int i = 0; i < SIZE; i++)
+    {
+        for (int j = 0; j < SIZE; j++)
+        {
+            matrix2[i][j] = (rand() % 101) + SIZE;
+        }
+    }
 
-    // Print timing results
-    printf("Total time for sequential execution: %.5f seconds\n", time_taken);
-    printf("Raw: %.6f seconds\n", time_taken);
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    // Naive 3-loop matrix multiplication
+    for (int x = 0; x < SIZE; x++)
+    {
+        for (int y = 0; y < SIZE; y++)
+        {
+            result[x][y] = 0;
+            for (int z = 0; z < SIZE; z++)
+            {
+                result[x][y] += matrix1[x][z] * matrix2[z][y];
+            }
+        }
+    }
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    // Calculate total time in seconds
+    double elapsed = (end.tv_sec - start.tv_sec) +
+                     (end.tv_nsec - start.tv_nsec) / 1e9;
+
+    printf("Sequential %f\n", elapsed);
 
     return 0;
 }

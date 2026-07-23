@@ -1,82 +1,112 @@
-#define _POSIX_C_SOURCE 199309L // Crucial for unlocking CLOCK_MONOTONIC on Linux/macOS
-#include <stdio.h>
+#define _POSIX_C_SOURCE 199309L
 #include <stdlib.h>
-#include <time.h>
+#include <stdio.h>
 #include <pthread.h>
+#include <time.h>
 
-#define ROWS1 500
-#define COLS1 500
-#define ROWS2 300
-#define COLS2 500
-#define NUM_THREADS 4
+#define SIZE 1000
+#define NUM_THREADS 12
 
-int mat1[ROWS1][COLS1];
-int mat2[ROWS2][COLS2];
-int result[ROWS1][COLS2];
+int matrix1[SIZE][SIZE];
+int matrix2[SIZE][SIZE];
+int result[SIZE][SIZE];
 
-typedef struct {
+/* Information given to each thread */
+typedef struct
+{
     int start_row;
     int end_row;
 } ThreadData;
 
-void* multiply_worker(void* arg) {
-    ThreadData* data = (ThreadData*)arg;
+/* Function executed by each thread */
+void *multiply(void *arg)
+{
+    ThreadData *data = (ThreadData *)arg;
 
-    for (int i = data->start_row; i < data->end_row; i++) {
-        for (int j = 0; j < COLS2; j++) {
-            int total = 0;
-            for (int k = 0; k < ROWS2; k++) {
-                total += mat1[i][k] * mat2[k][j];
+    for (int x = data->start_row; x < data->end_row; x++)
+    {
+
+        for (int y = 0; y < SIZE; y++)
+        {
+            result[x][y] = 0;
+
+            for (int z = 0; z < SIZE; z++)
+            {
+                result[x][y] += matrix1[x][z] * matrix2[z][y];
             }
-            result[i][j] = total;
         }
     }
+
     return NULL;
 }
 
-int main() {
-    srand((unsigned int)time(NULL));
-
-    // Populate matrices
-    for (int i = 0; i < ROWS1; i++) {
-        for (int j = 0; j < COLS1; j++) {
-            mat1[i][j] = (rand() % 10) + 1;
-        }
-    }
-
-    for (int i = 0; i < ROWS2; i++) {
-        for (int j = 0; j < COLS2; j++) {
-            mat2[i][j] = (rand() % 10) + 1;
-        }
-    }
-
-    // HIGH PRECISION TIMING START
-    struct timespec start, end;
-    clock_gettime(CLOCK_MONOTONIC, &start);
-
+int main()
+{
     pthread_t threads[NUM_THREADS];
     ThreadData thread_data[NUM_THREADS];
-    int rows_per_thread = ROWS1 / NUM_THREADS;
+    struct timespec start, end;
 
-    for (int i = 0; i < NUM_THREADS; i++) {
-        thread_data[i].start_row = i * rows_per_thread;
-        thread_data[i].end_row = (i == NUM_THREADS - 1) ? ROWS1 : (i + 1) * rows_per_thread;
-        pthread_create(&threads[i], NULL, multiply_worker, &thread_data[i]);
+    /* Generate matrix1 */
+    for (int r = 0; r < SIZE; r++)
+    {
+        for (int c = 0; c < SIZE; c++)
+        {
+            matrix1[r][c] = (rand() % 101) + 100;
+        }
     }
 
-    for (int i = 0; i < NUM_THREADS; i++) {
+    /* Generate matrix2 */
+    for (int i = 0; i < SIZE; i++)
+    {
+        for (int j = 0; j < SIZE; j++)
+        {
+            matrix2[i][j] = (rand() % 101) + 100;
+        }
+    }
+
+    /* Start measuring time */
+    //clock_t start = clock();
+    // time_t start =time(NULL);
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
+
+    /* Create threads */
+    for (int i = 0; i < NUM_THREADS; i++)
+    {
+        thread_data[i].start_row =
+            i * (SIZE / NUM_THREADS);
+
+        thread_data[i].end_row =
+            (i + 1) * (SIZE / NUM_THREADS);
+
+        pthread_create(
+            &threads[i],
+            NULL,
+            multiply,
+            &thread_data[i]
+        );
+    }
+
+    /* Wait for all threads */
+    for (int i = 0; i < NUM_THREADS; i++)
+    {
         pthread_join(threads[i], NULL);
     }
 
-    // HIGH PRECISION TIMING END
     clock_gettime(CLOCK_MONOTONIC, &end);
-    
-    // Calculate precise fractional time difference
-    double time_taken = (end.tv_sec - start.tv_sec) + 
-                        (end.tv_nsec - start.tv_nsec) / 1000000000.0;
+  /*  
+    time_t end = time(NULL);
 
-    printf("Total time for multithreaded execution: %f seconds\n", time_taken);
-    printf("%.6f seconds\n", time_taken);
+    double total_time = difftime(end,start);
+     double execution_time =
+        (double)(end - start) / CLOCKS_PER_SEC;
+        */
+    double elapsed =
+    (end.tv_sec - start.tv_sec) +
+    (end.tv_nsec - start.tv_nsec) / 1e9;
+
+    printf("Multithreading: %f seconds\n",
+           elapsed);
 
     return 0;
 }
