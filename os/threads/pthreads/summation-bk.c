@@ -32,7 +32,7 @@ void *runner(void *p)
     pthread_exit(0);
 }
 /*
-gcc summation.c -o sum
+gcc summation-bk.c -o sum
 ./sum 5
 
 op: Sum = 15
