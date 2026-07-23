@@ -19,5 +19,5 @@ output: When OpenMP encounters the directive
 #pragma omp parallel
 it creates as many threads as there are processing cores in the system
 
-It gave the statement 12 times.
+It gave me statement 12 times.
 */
