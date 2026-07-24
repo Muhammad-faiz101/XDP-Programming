@@ -31,6 +31,8 @@ int main(int argc, char *argv[])
     //set the sched policy - fifo, rr, other
     if (pthread_attr_setschedpolicy(&attr,  SCHED_FIFO) != 0)
     fprintf(stderr, "Unable to set the policy!\n");
+    else
+    printf("SCHED_FIFO set.\n");
 
     //create threads
     for (i=0; i<NUM_THREADS; i++)
