@@ -246,7 +246,7 @@ sudo ip netns exec device_b tcpdump -n -e -i cable2_b
 while the above ping command runs in another terminal tab.
 
 ---
-## Part 9: Teardown
+## Part 8: Teardown
 
 ```bash
 sudo ip netns del device_a
