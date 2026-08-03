@@ -48,8 +48,25 @@ int xdp_router(struct xdp_md *ctxt)
     struct mac_pair *macs = bpf_map_lookup_elem(&mac_map, &key);
 
     if (macs) {
+        __u32 *ifindex = bpf_map_lookup_elem(&tx_port, &key);
+
+        if (ifindex) {
+            bpf_printk("tx_port[%u] = %u", key, *ifindex);
+        }
+
+        bpf_printk("SRC %02x:%02x:%02x:%02x:%02x:%02x",
+                macs->src_mac[0], macs->src_mac[1],
+                macs->src_mac[2], macs->src_mac[3],
+                macs->src_mac[4], macs->src_mac[5]);
+
+        bpf_printk("DST %02x:%02x:%02x:%02x:%02x:%02x",
+                macs->dst_mac[0], macs->dst_mac[1],
+                macs->dst_mac[2], macs->dst_mac[3],
+                macs->dst_mac[4], macs->dst_mac[5]);
+
         __builtin_memcpy(eth->h_source, macs->src_mac, 6);
         __builtin_memcpy(eth->h_dest, macs->dst_mac, 6);
+
         return bpf_redirect_map(&tx_port, key, 0);
     }
 
