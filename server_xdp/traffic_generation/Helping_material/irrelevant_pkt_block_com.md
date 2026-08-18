@@ -12,4 +12,6 @@ Replace eth0 with your interface.
 
 
 2. Disable multicast
+```bash
     sudo ip link set dev eth0 multicast off
+```
