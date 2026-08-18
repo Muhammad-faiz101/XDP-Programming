@@ -1,5 +1,6 @@
 ### **Linux System Hardware Commands**
 
+
 #### **CPU**
 * `lscpu`  
   Displays processor architecture, core counts, thread counts, and clock speeds.
