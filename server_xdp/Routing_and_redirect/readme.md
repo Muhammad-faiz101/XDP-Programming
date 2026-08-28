@@ -205,11 +205,13 @@ IF1="ens7f0"
 IF2="ens7f1"
 
 # Detach XDP programs from both interfaces
-sudo ip link set dev $IF1 xdp off
-sudo ip link set dev $IF2 xdp off
+sudo ip link set dev $IF1 xdpgeneric off
+sudo ip link set dev $IF2 xdpgeneric off
 
 # Remove pinned program/map directories
 sudo rm -rf /sys/fs/bpf/xdp_router_if1 /sys/fs/bpf/xdp_router_if2
+
+
 ```
 
 ### 5.1 Verify teardown
