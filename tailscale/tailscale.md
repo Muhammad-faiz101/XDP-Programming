@@ -1,20 +1,23 @@
-````markdown
+````
+
+````
 # Remote Access to an Ubuntu Server Using Tailscale and SSH
 
 This guide explains how to securely access an Ubuntu server remotely when the server is located behind a university, office, home, or other private network.
 
 The setup uses:
 
-- **Tailscale** — creates a private network between authorized devices.
-- **SSH** — provides terminal access to the server.
+**Tailscale**: creates a private network between authorized devices.
+
+**SSH**: provides terminal access to the server.
 
 No public IP, port forwarding, or router configuration is required.
 
----
 
+````
 ## 1. Architecture
 
-```text
+
                     Internet
                        |
           +------------+------------+
