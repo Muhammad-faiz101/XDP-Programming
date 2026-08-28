@@ -1,5 +1,6 @@
 
-```markdown
+``` ```
+
 # XDP MAC-Rewriting Middlebox & Cross-Subnet NAT Router
 
 This project demonstrates a high-performance, Layer 2 "stealth" packet redirector using eBPF/XDP, bridging two isolated subnets. The architecture consists of a Client (Laptop A), a custom XDP Middlebox (Ubuntu Server), and a NAT Router (Laptop B) that shares a Wi-Fi connection back to the client over an Ethernet link.
@@ -316,9 +317,5 @@ sudo ip link set dev $IF2 xdp off
 
 # Remove pinned program/map directories
 sudo rm -rf /sys/fs/bpf/xdp_router_if1 /sys/fs/bpf/xdp_router_if2
-
-```
-
-```
 
 ```
